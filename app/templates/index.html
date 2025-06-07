@@ -2,26 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Recommendations</title>
+    <title>Anime Recommender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Rubik&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>Anime Recommender</h1>
-    <form method="POST">
-        <label for="title">Enter Anime Title:</label>
-        <input type="text" id="title" name="title" required>
-        <button type="submit">Recommend</button>
-    </form>
-   {% if title %}
-        <h2>Recommendations for  "{{title}}":</h2>
-        <ul>
-        {% for anime in recommendations %}
-            <li>{{ anime }}</li>
-        {% endfor %}
-        </ul>
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% endif %}
-    {% endif %}
+<body class="dark">
+    <div class="theme-toggle">
+        <label class="switch">
+            <input type="checkbox" id="themeSwitcher">
+            <span class="slider"></span>
+        </label>
+        <span class="theme-label">Toggle Theme</span>
+    </div>
+
+    <div class="overlay">
+        <div class="container">
+            <h1>Anime Recommender</h1>
+            <form method="POST" action="/">
+            <input type="text" name="title" placeholder="Enter anime title" required>
+            <button type="submit">Search</button>
+            <a href="/surprise" class="btn surprise-btn">Surprise Me</a>
+            </form>
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            {% if title %}
+                <h2>Top Picks for "{{ title }}":</h2>
+                <ul class="recommendations">
+                    {% for anime in recommendations %}
+                        <li>{{ anime }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeSwitcher');
+        const body = document.body;
+
+        // Load theme preference
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
 </body>
 </html>
